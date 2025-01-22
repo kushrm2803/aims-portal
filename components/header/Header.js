@@ -1,9 +1,10 @@
 import React from "react";
+import Navbar from "@/components/navbar/Navbar"
 
 const Header = () => {
   return (
-    <header className="flex items-center justify-center bg-black text-white w-full px-3 py-3">
-      <div>This is header</div>
+    <header className="w-full">
+      <Navbar/>
     </header>
   );
 };
