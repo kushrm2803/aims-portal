@@ -3,15 +3,22 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import notificationLogo from "../../public/navbar-logos/notification-logo.svg";
 import Dropdown from "../dropdown/Dropdown";
 
 const Navbar = () => {
-  const [activeTab, setActiveTab] = useState(0); //Home (index 0)
+  const [mounted, setMounted] = useState(false);
+  const currentPath = usePathname() || "/";
 
-  const handleTabClick = (index) => {
-    setActiveTab(index);
-  };
+  const tabs = [
+    { label: "Home", path: "/home" },
+    { label: "Student Record", path: "/student-record" },
+    { label: "Current Semester", path: "/current-semester" },
+    { label: "Courses", path: "/courses" },
+    { label: "About", path: "/about" },
+    { label: "Help", path: "/help" },
+  ];
 
   const notificationMenuItems = [
     { label: "News1", description: "CGPA updated" },
@@ -22,43 +29,44 @@ const Navbar = () => {
 
   const profileMenuItems = [
     { label: "Profile", href: "/profile" },
-    { label: "Logout", href: "/logout" },
+    { label: "Logout"},
   ];
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isActiveTab = (path) => {
+    if (path === "/") {
+      return currentPath === "/" || currentPath === "";
+    }
+    return currentPath === path;
+  };
+
+  if (!mounted) return null;
 
   return (
     <nav className="bg-gray-800 text-white w-9/10 mx-3 my-4 px-6 rounded-2xl flex justify-between items-center shadow-lg">
-      {/* Left Section */}
       <div className="text-xl font-bold hover:scale-105 transition duration-300 ease-in-out transform">
         <Link href="/">AIMS-IIT Ropar</Link>
       </div>
 
-      {/* Center Section */}
       <div className="space-x-6 flex items-center">
-        {[
-          "Home",
-          "Student Record",
-          "Current Semester",
-          "Courses",
-          "About",
-          "Help",
-        ].map((text, index) => (
+        {tabs.map((tab, index) => (
           <Link
             key={index}
-            href={`/${text.toLowerCase().replace(/ /g, "-")}`}
+            href={tab.path}
             className={`${
-              activeTab === index
+              isActiveTab(tab.path)
                 ? "scale-110 bg-gray-700 text-white rounded-xl shadow-md font-bold px-4 py-2"
                 : "scale-100 hover:text-gray-400 transition duration-300 ease-in-out transform cursor-pointer"
             }`}
-            onClick={() => handleTabClick(index)}
           >
-            {text}
+            {tab.label}
           </Link>
         ))}
       </div>
 
-      {/* Right Section */}
       <div className="flex items-center space-x-6">
         <Dropdown
           icon={

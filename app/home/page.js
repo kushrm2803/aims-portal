@@ -1,7 +1,18 @@
 import Link from "next/link";
-import React from "react";
+import React, { Children } from "react";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
 
-const HomePage = () => {
+async function getUser() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("authToken")?.value
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+  return decoded;
+}
+
+export default async function HomePage() {
+  const token = await getUser();
+
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col w-9/10 mx-3 my-4 py-3 px-6 rounded-2xl items-center">
       <section className="w-9/10 max-w-7xl bg-gray-800 text-center py-16 px-6 rounded-2xl shadow-lg my-6 transform transition duration-500 hover:scale-105">
@@ -10,6 +21,7 @@ const HomePage = () => {
           Your ultimate platform for managing student records, courses, and
           academic information effortlessly.
         </p>
+        <h1>{token.email || "No email found"}</h1>
         <Link href="/login">
           <button className="bg-gray-700 text-white font-semibold py-2 px-6 rounded-xl shadow-md hover:bg-gray-600 transition">
             Get Started
@@ -74,6 +86,4 @@ const HomePage = () => {
       </section>
     </div>
   );
-};
-
-export default HomePage;
+}

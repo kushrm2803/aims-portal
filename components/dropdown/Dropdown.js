@@ -2,10 +2,18 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { handleLogout } from "@/utils/auth";
 
 const Dropdown = ({ icon, menuItems }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mounted, setMounted] = useState(false); // Add mounted state
   const dropdownRef = useRef(null);
+  const router = useRouter(); // For routing after logout
+
+  useEffect(() => {
+    setMounted(true); // Set mounted to true when component is mounted
+  }, []);
 
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev);
@@ -23,6 +31,15 @@ const Dropdown = ({ icon, menuItems }) => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  const onMenuItemClick = async (item) => {
+    if (item.label === "Logout") {
+      await handleLogout(); // Wait for logout to complete
+      router.push("/login"); // Redirect to the login page
+    }
+  };
+
+  if (!mounted) return null; // Don't render the component until mounted
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -56,6 +73,7 @@ const Dropdown = ({ icon, menuItems }) => {
             {menuItems.map((item, index) => (
               <li
                 key={index}
+                onClick={() => onMenuItemClick(item)} // Handle item click
                 className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
               >
                 {item.href ? (
