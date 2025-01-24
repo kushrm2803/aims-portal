@@ -1,11 +1,16 @@
 import { connectToDatabase } from '@/lib/dbConnect';
+import {connectDB} from "@/utils/db"
 import Otp from '@/models/Otp';
 import jwt from 'jsonwebtoken';
 import cookie from 'cookie';
+import Admin from "@/models/Admin";
+import Student from "@/models/Student";
+import { Professor } from "@/models/Professor";
 
-const generateToken = (userEmail) => {
+
+const generateToken = (newToken) => {
   const token = jwt.sign(
-    { email: userEmail },
+    newToken,
     process.env.JWT_SECRET,
     { expiresIn: '1h' }
   );
@@ -60,7 +65,32 @@ export async function POST(req) {
     console.log('OTP deleted from database for:', email);
 
     // Generate JWT token
-    const token = generateToken(email);
+    await connectDB();
+    var newToken = {}
+    newToken.email = email
+    const admin = await Admin.findOne(newToken);
+    const professor = await Professor.findOne(newToken);
+    const student = await Student.findOne(newToken)
+    // console.log(newToken)
+    // console.log(admin)
+    // console.log(professor)
+    // console.log(student)
+    if(admin) {
+      newToken.id = admin.id;
+      newToken.role = "admin";
+    }
+    else if(professor) {
+      newToken.id = professor.id
+      newToken.role = "professor";
+    }
+    else if(student) {
+      newToken.id = student.id
+      newToken.role = "student";
+    }
+    else{
+      throw new error("User not registered")
+    }
+    const token = generateToken(newToken);
 
     // Set the JWT token as an HTTP-only cookie
     return new Response(
@@ -82,7 +112,7 @@ export async function POST(req) {
   } catch (error) {
     console.error('Error verifying OTP:', error);
     return new Response(
-      JSON.stringify({ message: 'Internal server error' }),
+      JSON.stringify({ errormessage: (error=="User not registered"?error:'Internal server error') }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
