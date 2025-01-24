@@ -7,7 +7,7 @@ export async function handleLogout() {
   
       if (response.ok) {
         // Redirect to index with success message in query parameter
-        window.location.href = '/?logout=success';
+        window.location.href = '/login?message=logout-success';
       } else {
         alert('Logout failed. Please try again.');
       }

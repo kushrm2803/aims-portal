@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter ,useSearchParams} from "next/navigation";
 import Header from "@/components/auth/Header";
 import LoginForm from "@/components/auth/LoginForm";
 import OTPForm from "@/components/auth/OTPForm";
 import LogoutMessage from "@/components/auth/LogoutMessage";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage = () => {
   const [step, setStep] = useState(1);
@@ -13,12 +15,18 @@ const LoginPage = () => {
   const [logoutMessage, setLogoutMessage] = useState("");
   const router = useRouter();
 
+  const searchParams = useSearchParams();
+
   useEffect(() => {
-    if (typeof window !== "undefined" && router.query?.logout === "success") {
-      setLogoutMessage("You have been logged out successfully.");
-      router.replace("/", { shallow: true });
+    // toast.configure();  // Ensure toast is configured
+    const message = searchParams.get('message');
+    console.log("Query message:", message); 
+  
+    if (message === 'logout-success') {
+      toast.success('You have been logged out successfully.');
+      router.replace('/login'); // Clean up URL
     }
-  }, [router]);
+  }, [searchParams]);
 
   const handleNext = (enteredEmail) => {
     setEmail(enteredEmail);
@@ -32,6 +40,7 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen w-9/10 mx-4 rounded-2xl bg-gray-900 text-white flex items-center justify-center">
+       <ToastContainer />
       <div className="w-full max-w-lg bg-gray-800 text-center py-6 px-4 rounded-2xl">
         <Header />
         {logoutMessage && <LogoutMessage message={logoutMessage} />}
