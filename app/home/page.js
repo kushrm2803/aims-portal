@@ -2,6 +2,7 @@ import Link from "next/link";
 import React, { Children } from "react";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
+import LogoutMessage from "@/components/auth/LogoutMessage";
 
 async function getUser() {
   const cookieStore = await cookies();
