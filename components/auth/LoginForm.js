@@ -1,0 +1,69 @@
+// LoginForm Component
+import React, { useState } from "react";
+
+const LoginForm = ({ onNext }) => {
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email.endsWith("@iitrpr.ac.in")) {
+      setError("Please use a valid IIT Ropar email address.");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/auth/sendOtp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setError("");
+        onNext(email);
+        alert(data.message);
+      } else {
+        setError(data.message);
+      }
+    } catch (error) {
+      setError("Failed to send OTP. Please try again later.");
+    }
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="bg-gray-800 p-6 rounded-2xl w-full max-w-md mx-auto text-center"
+    >
+      <h1 className="text-2xl font-bold mb-4">LOGIN</h1>
+      <div className="mb-4 text-left">
+        <label
+          htmlFor="email"
+          className="block mb-2 text-sm font-medium text-gray-300"
+        >
+          Email
+        </label>
+        <input
+          id="email"
+          type="email"
+          placeholder="Enter email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full p-2 rounded-md bg-gray-900 text-white border border-gray-600 focus:outline-none focus:border-blue-500"
+        />
+      </div>
+      {error && <div className="text-red-500 mb-4 text-sm">{error}</div>}
+      <button
+        type="submit"
+        className="bg-gray-700 hover:bg-gray-900 text-white py-2 px-4 rounded-md w-full transition"
+      >
+        Send OTP
+      </button>
+    </form>
+  );
+};
+
+export default LoginForm;
