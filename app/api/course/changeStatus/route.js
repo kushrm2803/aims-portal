@@ -15,10 +15,10 @@ export async function PATCH(req) {
 
     console.log(decoded.role)
     if (decoded.role !== "admin") {
-      return new Response(JSON.stringify({ error: "Access denied" }), { status: 403 });
+      return new Response(JSON.stringify({ error: "Access denied. Only Acces by admin" }), { status: 403 });
     }
     const body = await req.json();
-    console.log(body)
+    // console.log(body)
     const {courseId} = body;
 
     console.log(courseId)

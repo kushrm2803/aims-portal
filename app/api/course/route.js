@@ -6,7 +6,8 @@ import { cookies } from "next/headers";
 // GET request - Fetch all course
 export async function GET(req) {
   await connectDB();
-  const courses = await Course.find({});
+  const courses = await Course.find({}).populate('professor');
+  console.log(courses);
   return Response.json({ success: true, courses });
 }
 

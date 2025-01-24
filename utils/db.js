@@ -1,12 +1,11 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const MONGODB_URI = process.env.MONGODB_URI1;
 
 if (!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable");
+  throw new Error('Please define the MONGODB_URI environment variable');
 }
 
-// Use a global variable to prevent reinitializing the connection in development
 let cached = global.mongoose;
 
 if (!cached) {
@@ -19,13 +18,15 @@ export async function connectDB() {
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    cached.promise = mongoose.connect(MONGODB_URI,{
+        tls: true,  // Ensure TLS is enabled
+        tlsAllowInvalidCertificates: false,  // Set to false for production
+        dbName: process.env.DB_NAME || "defaultDB",
+        serverSelectionTimeoutMS: 5000,  // Shorter timeout for debugging
+        socketTimeoutMS: 10000
+    }).then((mongoose) => mongoose);
   }
 
   cached.conn = await cached.promise;
-  console.log("Connected to MongoDB");
   return cached.conn;
 }

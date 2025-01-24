@@ -8,8 +8,9 @@ const StudentSchema = new mongoose.Schema({
   courses: [
     {
       course: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
-      grade: { type: String },
-      semester : { type: Number},
+      status: {type: "String", enum: ["Pending Faculty Approval", "Pending Faculty Advisor Approval", "Enrolled", "Dropped", "WithDras"], default : "Pending Faculty Approval"},
+      grade: { type: String , default: "NA"},
+      semester : { type: Number, default: 1},
       default : {}
     },
   ],
