@@ -21,7 +21,7 @@ export async function connectDB() {
     cached.promise = mongoose.connect(MONGODB_URI,{
         tls: true,  // Ensure TLS is enabled
         tlsAllowInvalidCertificates: false,  // Set to false for production
-        dbName: process.env.DB_NAME || "defaultDB",
+        dbName: "aims_portal",
         serverSelectionTimeoutMS: 5000,  // Shorter timeout for debugging
         socketTimeoutMS: 10000
     }).then((mongoose) => mongoose);

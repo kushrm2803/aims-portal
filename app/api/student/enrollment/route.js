@@ -1,13 +1,13 @@
 import { connectDB } from "@/utils/db";
 import Student from "@/models/Student";
 import Course from "@/models/Course"; // Fixed typo "Cousre" to "Course"
+import Enrollment from "@/models/Enrollment";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
 export async function PATCH(req) {
   try {
     console.log("in enrollment");
-
     await connectDB();
 
     // Get the token from cookies
@@ -41,31 +41,13 @@ export async function PATCH(req) {
     console.log("Course ID:", courseId);
     
     // Update the student to add the course ID
-    const updatedStudent = await Student.findByIdAndUpdate(
-      studentId,
-      { $addToSet: { courses: {course: courseId} } },  // Corrected typo in "coures" to "courses"
-      { new: true }
-    );
-
-    // Update the course to add the student ID
-    const updatedCourse = await Course.findByIdAndUpdate(
-      courseId,
-      { $addToSet: { students: studentId } },  // Avoid duplicate students
-      { new: true }
-    );
-
-    if (!updatedStudent || !updatedCourse) {
-      return new Response(
-        JSON.stringify({ error: "Fuck You!! Failed to enroll student in course" }),
-        { status: 400 }
-      );
-    }
+    const newEnrollment = new Enrollment({courseId, studentId});
+    newEnrollment.save();
 
     return new Response(
       JSON.stringify({
         success: true,
-        student: updatedStudent,
-        course: updatedCourse,
+        newEnrollment
       }),
       { status: 201 }
     );

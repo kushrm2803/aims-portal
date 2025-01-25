@@ -5,15 +5,15 @@ const StudentSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   rollNumber: { type: String, required: true, unique: true },
   profilePic: { type: String },
-  courses: [
-    {
-      course: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
-      status: {type: "String", enum: ["Pending Faculty Approval", "Pending Faculty Advisor Approval", "Enrolled", "Dropped", "WithDras"], default : "Pending Faculty Approval"},
-      grade: { type: String , default: "NA"},
-      semester : { type: Number, default: 1},
-      default : {}
-    },
-  ],
+  // courses: [
+  //   {
+  //     course: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+  //     status: {type: "String", enum: ["Pending Faculty Approval", "Pending Faculty Advisor Approval", "Enrolled", "Dropped", "WithDras"], default : "Pending Faculty Approval"},
+  //     grade: { type: String , default: "NA"},
+  //     semester : { type: Number, default: 1},
+  //     default : {}
+  //   },
+  // ],
   sgpa: [{ semester: Number, sgpa: Number }],
   cgpa: { type: Number },
   batch : { type: mongoose.Schema.Types.ObjectId, ref: "batch", required: true }

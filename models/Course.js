@@ -6,11 +6,6 @@ const CourseSchema = new mongoose.Schema({
   courseCredit: {type: Number, required: true},
   professor: { type: mongoose.Schema.Types.ObjectId, ref: "Professor", required: true }, // Created by Professor
   adminApproval : {type: Boolean, required: true, default: false},
-  students : [
-    {
-      type: mongoose.Schema.Types.ObjectId, ref: "Student"
-    }
-  ],
   status: {
     type: String,
     enum: ["pending", "open for enrollment", "in progress", "completed"],
