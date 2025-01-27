@@ -1,24 +1,74 @@
-'use client'
-import React, { useState } from "react";
-import CourseCard from "@/components/courses/CourseCard";
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import CourseCard from '@/components/courses/CourseCard';
+
 
 const CoursesPage = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [courses, setCourses] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [allCourses, setAllCourses] = useState([]);  // Store all courses for filtering
 
-  const handleSearch = async () => {
-    const data = [
-      { id: 1, name: "Machine Learning", credits: 4 },
-      { id: 2, name: "Artificial Intelligence", credits: 3 },
-      { id: 3, name: "Data Science", credits: 3 },
-    ];
-    setCourses(data.filter(course => course.name.toLowerCase().includes(searchQuery.toLowerCase())));
+  const [filteredCourses, setFilteredCourses] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await axios.get('/api/student/get-approved-courses');
+      setAllCourses(response.data);
+      setFilteredCourses(response.data);
+    } catch (err) {
+      setError('Failed to fetch courses.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCredit = (courseId) => {
-    alert(`Course with ID ${courseId} credited.`);
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    setSearchQuery(query);
+
+    if (query === '') {
+      setFilteredCourses(allCourses);
+    } else {
+      const filtered = allCourses.filter((course) =>
+        course.name.toLowerCase().includes(query)
+      );
+      setFilteredCourses(filtered);
+    }
   };
 
+
+
+  const handleCredit = async (courseId) => {
+   
+   // Replace with actual student ID (from context, localStorage, or props)
+  
+    try {
+      const response = await axios.post('/api/student/enroll-request', {
+        courseId
+      });
+  
+      if (response.status === 200) {
+        alert(`Credit request sent successfully for course ID: ${courseId}. Awaiting admin approval.`);
+      } else {
+        alert(`Failed to send request: ${response.data.error}`);
+      }
+    } catch (error) {
+      console.error('Error sending credit request:', error);
+      alert('An error occurred while sending the request. Please try again.');
+    }
+  };
+  
   const handleMinor = (courseId) => {
     alert(`Course with ID ${courseId} credited for minor.`);
   };
@@ -41,28 +91,30 @@ const CoursesPage = () => {
           className="w-full bg-gray-800 text-white py-2 px-4 rounded-xl"
           placeholder="Search for courses..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={handleSearch}
         />
-        <button
-          className="bg-gray-700 text-white font-semibold py-2 px-6 rounded-xl hover:bg-gray-600 transition mt-4"
-          onClick={handleSearch}
-        >
-          Search
-        </button>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-        {courses.map((course) => (
-          <CourseCard
-            key={course.id}
-            course={course}
-            onCredit={handleCredit}
-            onMinor={handleMinor}
-            onConcentration={handleConcentration}
-            onViewDetails={handleViewDetails}
-          />
-        ))}
-      </div>
+      {loading ? (
+        <p className="text-gray-400">Loading courses...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : filteredCourses.length === 0 ? (
+        <p className="text-gray-400">No courses found.</p>
+      ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+          {filteredCourses.map((course) => (
+            <CourseCard
+              key={course._id}
+              course={course}
+              onCredit={() => handleCredit(course._id)}
+              onMinor={handleMinor}
+              onConcentration={handleConcentration}
+              onViewDetails={handleViewDetails}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

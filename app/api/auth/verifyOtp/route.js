@@ -1,4 +1,5 @@
-import { connectToDatabase } from '@/lib/dbConnect';
+// import { connectToDatabase } from '@/lib/dbConnect';
+import {connectDB} from "@/utils/db"
 import Otp from '@/models/Otp';
 import jwt from 'jsonwebtoken';
 import cookie from 'cookie';
@@ -29,7 +30,8 @@ export async function POST(req) {
   }
 
   try {
-    await connectToDatabase();
+    // await connectToDatabase();
+    await connectDB();
     console.log('Connected to database');
 
     // Find OTP record
@@ -60,7 +62,34 @@ export async function POST(req) {
     console.log('OTP deleted from database for:', email);
 
     // Generate JWT token
-    const token = generateToken(email);
+    await connectDB();
+    var newToken = {}
+    newToken.email = email
+    const admin = await Admin.findOne({email : newToken.email});
+    const professor = await Professor.findOne({email : newToken.email});
+    const student = await Student.findOne({email : newToken.email})
+    console.log(newToken)
+    console.log(admin)
+    // console.log(professor)
+    // console.log(student)
+    if(admin) {
+      newToken.id = admin.id;
+      newToken.role = "admin";
+      console.log("hello ADMIN ", newToken);
+    }
+    else if(professor) {
+      newToken.id = professor.id
+      newToken.role = "professor";
+    }
+    else if(student) {
+      newToken.id = student.id
+      newToken.role = "student";
+    }
+    else{
+      console.log(`User Not Registered: ${email}`);
+      throw new Error("User not registered");
+    }
+    const token = generateToken(newToken);
 
     // Set the JWT token as an HTTP-only cookie
     return new Response(
@@ -79,11 +108,16 @@ export async function POST(req) {
         },
       }
     );
-  } catch (error) {
-    console.error('Error verifying OTP:', error);
+  }catch (error) {
+    console.error('Error verifying OTP:', error.message);
+    
+    const errorMessage = error.message === "User not registered"
+      ? "User not registered."
+      : "Internal server error. Please try again later.";
+  
     return new Response(
-      JSON.stringify({ message: 'Internal server error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      JSON.stringify({ errormessage: errorMessage }),
+      { status: 400, headers: { 'Content-Type': 'application/json' } }  // Change status to 400 for user errors
     );
   }
 }
