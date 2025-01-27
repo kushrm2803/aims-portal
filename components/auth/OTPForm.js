@@ -23,12 +23,12 @@ const OTPForm = ({ onVerify, email }) => {
       });
 
       const data = await response.json();
-
+       console.log("data{response} recieved on the OTP form ",data);
       if (response.ok) {
         alert(data.message);
         onVerify();
       } else {
-        setError(data.message || "Invalid OTP. Please try again.");
+        setError(data.errormessage || "Invalid OTP. Please try again.");
       }
     } catch (error) {
       setError("Failed to verify OTP. Please try again.");

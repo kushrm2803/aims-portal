@@ -14,25 +14,25 @@ const CourseTable = ({ courses, onWithdraw, onAudit, onDrop }) => {
         </thead>
         <tbody>
           {courses.map((course, index) => (
-            <tr key={index} className="border-b border-gray-700">
-              <td className="py-2 px-4 text-left">{course.name}</td>
-              <td className="py-2 px-4 text-center">{course.credits}</td>
+            <tr key={course._id || index} className="border-b border-gray-700">
+              <td className="py-2 px-4 text-left">{course.courseName}</td>
+              <td className="py-2 px-4 text-center">{course.courseCredit}</td>
               <td className="py-2 px-4 text-center space-x-4">
                 <button
                   className="bg-gray-700 text-white font-semibold py-1 px-3 rounded-xl hover:bg-gray-600 transition"
-                  onClick={() => onWithdraw(course.id)}
+                  onClick={() => onWithdraw(course._id)}
                 >
                   Withdraw
                 </button>
                 <button
                   className="bg-gray-700 text-white font-semibold py-1 px-3 rounded-xl hover:bg-gray-600 transition"
-                  onClick={() => onAudit(course.id)}
+                  onClick={() => onAudit(course._id)}
                 >
                   Audit
                 </button>
                 <button
                   className="bg-gray-700 text-white font-semibold py-1 px-3 rounded-xl hover:bg-gray-600 transition"
-                  onClick={() => onDrop(course.id)}
+                  onClick={() => onDrop(course._id)}
                 >
                   Drop
                 </button>
@@ -46,4 +46,3 @@ const CourseTable = ({ courses, onWithdraw, onAudit, onDrop }) => {
 };
 
 export default CourseTable;
-

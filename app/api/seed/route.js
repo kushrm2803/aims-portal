@@ -3,7 +3,7 @@ import { connectDB } from "@/utils/db";  // Your DB connection function
 import Student from "@/models/Student";  
 import {Professor} from "@/models/Professor";
 import Admin from "@/models/Admin";
-import Batch from "@/models/batch"; 
+import Batch from "@/models/Batch"; 
 
 const myRollNo  = process.env.rollNumber || "2022csb1079";
 

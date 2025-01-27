@@ -6,16 +6,51 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import notificationLogo from "../../public/navbar-logos/notification-logo.svg";
 import Dropdown from "../dropdown/Dropdown";
+import { useAuth } from "../../context/AuthContext";
 
 const Navbar = () => {
   const [mounted, setMounted] = useState(false);
   const currentPath = usePathname() || "/";
+  const { user, loading } = useAuth();
+  const [userData, setUserData] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!loading && user) {
+      fetchUserData(user.role, user.email);
+    }
+  }, [user, loading]);
+
+  const fetchUserData = async (role, email) => {
+    try {
+      const response = await fetch(`/api/profile/${role}/${email}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch profile data");
+      }
+      const data = await response.json();
+      setUserData({
+        name: data.name || "Unknown",
+        photo: data.photo || "/default-profile.png",
+      });
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+  // if (loading) return <p>Loading...</p>;
+console.log("User from context:", user);
+
 
   const tabs = [
     { label: "Home", path: "/home" },
-    { label: "Student Record", path: "/student-record" },
-    { label: "Current Semester", path: "/current-semester" },
-    { label: "Courses", path: "/courses" },
+    { label: "Student Record", path: "/student-record", roles: ["student"] },
+    { label: "Current Semester", path: "/current-semester", roles: ["student"] },
+    { label: "Courses", path: "/courses", roles: ["student"] },
+    { label: "My Courses", path: "/faculty/my-courses", roles: ["professor"] },
+    { label: "Create Course", path: "/faculty/create-course", roles: ["professor"] },
+    { label: "Student Applications", path: "/admin/student-applications", roles: ["admin"] },
+    { label: "User Management", path: "/admin/user-management", roles: ["admin"] },
+    { label: "Course Management", path: "/admin/course-management", roles: ["admin"] },
+    { label: "Result Management", path: "/admin/result-management", roles: ["admin"] },
     { label: "About", path: "/about" },
     { label: "Help", path: "/help" },
   ];
@@ -33,8 +68,11 @@ const Navbar = () => {
   ];
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    if (!loading) {
+      setMounted(true);
+    }
+  }, [loading]);
+  
 
   const isActiveTab = (path) => {
     if (path === "/") {
@@ -43,7 +81,14 @@ const Navbar = () => {
     return currentPath === path;
   };
 
-  if (!mounted) return null;
+  if (!mounted || loading) {
+    // Render a loading placeholder while user data is being fetched
+    return (
+      <nav className="bg-gray-800 text-white w-9/10 mx-3 my-4 px-6 rounded-2xl flex justify-center items-center shadow-lg h-16">
+        <p>Loading...</p>
+      </nav>
+    );
+  }
 
   return (
     <nav className="bg-gray-800 text-white w-9/10 mx-3 my-4 px-6 rounded-2xl flex justify-between items-center shadow-lg">
@@ -52,7 +97,9 @@ const Navbar = () => {
       </div>
 
       <div className="space-x-6 flex items-center">
-        {tabs.map((tab, index) => (
+        {tabs
+          .filter((tab) => !tab.roles || tab.roles.includes(user?.role)) // Only show tabs allowed for the user's role
+          .map((tab, index) => (
           <Link
             key={index}
             href={tab.path}
@@ -80,7 +127,20 @@ const Navbar = () => {
           menuItems={notificationMenuItems}
         />
         <Dropdown
-          icon={<Image src="" alt="profile-icon" width={24} height={24} />}
+         
+         icon={
+          userData ? (
+            <Image
+              src={userData.photo}
+              alt="profile-icon"
+              width={40}
+              height={40}
+              className="rounded-full border border-gray-400"
+            />
+          ) : (
+            <div className="w-10 h-10 bg-gray-500 rounded-full" />
+          )
+        }
           menuItems={profileMenuItems}
         />
       </div>

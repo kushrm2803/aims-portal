@@ -1,5 +1,5 @@
 import { connectDB } from "@/utils/db";
-import Batch from "@/models/batch";
+import Batch from "@/models/Batch";
 
 export async function GET(req){
     await connectDB();
