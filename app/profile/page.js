@@ -41,9 +41,7 @@ const ProfilePage = () => {
                 { label: "Courses Taught", value: data.coursesTaught || "N/A" },
               ]
             : role === "admin"
-            ? [
-                { label: "Role", value: "Administrator" },
-              ]
+            ? [{ label: "Role", value: "Administrator" }]
             : []),
         ],
       });
@@ -61,10 +59,14 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col w-9/10 mx-3 my-4 py-3 px-6 rounded-2xl items-center">
+    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center py-6 px-4">
       {userData ? (
         <>
-          <ProfileHeader name={userData.name} role={userData.role} photo={userData.photo} />
+          <ProfileHeader
+            name={userData.name}
+            role={userData.role}
+            photo={userData.photo}
+          />
           <ProfileDetails details={userData.details} />
         </>
       ) : (

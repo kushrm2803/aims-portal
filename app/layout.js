@@ -21,19 +21,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    
-    
-      <AuthProvider>
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-700 to-slate-500 min-h-screen flex flex-col`}
+    <AuthProvider>
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-b from-slate-900 via-slate-700 to-slate-500 min-h-screen flex flex-col`}
         >
-        <Header />
-        <main className="flex-grow">{children}</main>
-        <Footer />
-      </body>
-    </html>
-        </AuthProvider>
-   
+          <Header />
+          <main className="flex-grow">{children}</main>
+          <Footer />
+        </body>
+      </html>
+    </AuthProvider>
   );
 }

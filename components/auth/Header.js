@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { toast } from 'react-toastify';
 
 const Header = () => {
   const [text, setText] = useState("");
@@ -20,8 +21,8 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="text-center py-6 text-3xl font-bold">
-      <span className="text-gray-100">{text}</span>
+    <header className="text-center py-6 text-3xl sm:text-4xl md:text-5xl font-bold text-gray-100">
+      <span>{text}</span>
     </header>
   );
 };

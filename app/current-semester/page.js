@@ -32,39 +32,38 @@ const CurrentSemesterPage = () => {
     fetchCourses(user.id); // Pass the studentId from the context
   }, [user]);
 
-  const handleWithdraw = async (courseId) => {
-    alert(`Course with ID ${courseId} withdrawn.`);
-  };
-
-  const handleAudit = async (courseId) => {
-    alert(`Course with ID ${courseId} audited.`);
-  };
-
   const handleDrop = async (courseId) => {
     alert(`Course with ID ${courseId} dropped.`);
   };
 
   if (loading) {
-    return <div className="text-center text-white">Loading courses...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
+        <p className="text-lg">Loading courses...</p>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-center text-red-500">Error: {error}</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-red-500">
+        <p className="text-lg">Error: {error}</p>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col w-9/10 mx-3 my-4 py-3 px-6 rounded-2xl items-center">
-      <h1 className="text-4xl font-bold mb-6">Current Semester</h1>
+    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-16">
+      <h1 className="text-3xl md:text-4xl font-bold my-6 text-center">
+        Current Semester
+      </h1>
 
       {courses.length > 0 ? (
-        <CourseTable
-          courses={courses}
-          onWithdraw={handleWithdraw}
-          onAudit={handleAudit}
-          onDrop={handleDrop}
-        />
+        <CourseTable courses={courses} onDrop={handleDrop} />
       ) : (
-        <p className="text-gray-400">No courses enrolled yet.</p>
+        <p className="text-gray-400 text-center text-lg">
+          No courses enrolled yet.
+        </p>
       )}
     </div>
   );

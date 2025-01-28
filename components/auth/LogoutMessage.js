@@ -1,7 +1,8 @@
+"use client";
 import React from "react";
 
 const LogoutMessage = ({ message }) => {
-  if (!message) return null; // Don't render if no message is passed
+  if (!message) return null;
 
   return (
     <div
@@ -11,7 +12,6 @@ const LogoutMessage = ({ message }) => {
         color: "#155724",
         border: "1px solid #c3e6cb",
         borderRadius: "5px",
-        marginTop: "120px",
         fontSize: "1rem",
         fontWeight: "400",
         textAlign: "center",

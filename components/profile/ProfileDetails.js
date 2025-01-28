@@ -2,8 +2,10 @@ import React from "react";
 
 const ProfileDetails = ({ details }) => {
   return (
-    <section className="w-9/12 max-w-7xl bg-gray-800 rounded-2xl py-12 px-6 shadow-lg my-6 transform transition duration-500 hover:scale-105">
-      <h2 className="text-3xl font-bold mb-4 text-center">Profile Details</h2>
+    <section className="w-full max-w-2xl bg-gray-800 rounded-2xl py-12 px-8 shadow-lg my-6 transform transition duration-500 hover:scale-105">
+      <h2 className="text-3xl font-bold mb-6 text-center text-white">
+        Profile Details
+      </h2>
       <ul className="text-gray-300 space-y-4">
         {details.map((detail, index) => (
           <li

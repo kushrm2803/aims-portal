@@ -3,65 +3,56 @@ import Map from "@/components/map/Map";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white mx-3 my-2 py-3 px-6 rounded-2xl shadow-lg">
-      <div className="flex flex-wrap justify-between">
+    <footer className="bg-gray-800 text-white py-6 px-4 sm:px-6 shadow-lg">
+      <div className="flex flex-wrap justify-between space-y-6 sm:space-y-0">
         {/* Left Section */}
-        <div className="w-full md:w-1/2 flex flex-col space-y-4">
+        <div className="w-full lg:w-1/2 flex flex-col space-y-6 items-center lg:items-start text-center lg:text-left">
           <section>
-            <p>
+            <p className="text-base sm:text-lg">
               <strong>AIMS Portal - IIT Ropar</strong>
               <br />
               Made for students and faculty!
             </p>
           </section>
-          <div>
+          <div className="w-full sm:w-3/4 lg:w-10/12">
             <Map />
           </div>
         </div>
 
         {/* Right Section */}
-        <div className="w-full md:w-1/2 grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 md:mt-0">
+        <div className="w-full lg:w-1/2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div>
-            <h6 className="footer-title font-bold mb-2">Quick Finds</h6>
-            <ul className="space-y-1">
+            <h6 className="footer-title font-bold mb-3 text-lg">
+              Useful Links
+            </h6>
+            <ul className="space-y-2">
               <li>
-                <Link href="/" className="hover:text-gray-300">
-                  Attendance Record
-                </Link>
-              </li>
-              <li>
-                <Link href="/" className="hover:text-gray-300">
-                  Student Record
-                </Link>
-              </li>
-              <li>
-                <Link href="/" className="hover:text-gray-300">
-                  Course Enrollment
-                </Link>
-              </li>
-              <li>
-                <Link href="/" className="hover:text-gray-300">
-                  User Profile
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h6 className="footer-title font-bold mb-2">Useful Links</h6>
-            <ul className="space-y-1">
-              <li>
-                <Link href="/" className="hover:text-gray-300">
+                <Link
+                  href="https://www.iitrpr.ac.in/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-gray-300 text-sm sm:text-base"
+                >
                   IIT Ropar Main Site
                 </Link>
               </li>
               <li>
-                <Link href="/" className="hover:text-gray-300">
+                <Link
+                  href="https://www.iitrpr.ac.in/it"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-gray-300 text-sm sm:text-base"
+                >
                   IT Website
                 </Link>
               </li>
               <li>
-                <Link href="/" className="hover:text-gray-300">
+                <Link
+                  href="/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-gray-300 text-sm sm:text-base"
+                >
                   Feedback Form
                 </Link>
               </li>
@@ -69,11 +60,16 @@ const Footer = () => {
           </div>
 
           <div>
-            <h6 className="footer-title font-bold mb-2">Contact Details</h6>
-            <p>IIT Ropar Main Campus, Baraphool, Rupnagar</p>
-            <br />
-            <p>Email: info@iitrpr.ac.in</p>
-            <p>Phone: +91-123-456-7890</p>
+            <h6 className="footer-title font-bold mb-3 text-lg">
+              Contact Details
+            </h6>
+            <p className="text-sm sm:text-base">
+              IIT Ropar Main Campus, Baraphool, Rupnagar
+            </p>
+            <p className="mt-3 text-sm sm:text-base">
+              Email: info@iitrpr.ac.in
+            </p>
+            <p className="text-sm sm:text-base">Phone: +91-123-456-7890</p>
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
-// LoginForm Component
+"use client";
 import React, { useState } from "react";
+import { toast } from 'react-toastify';
 
 const LoginForm = ({ onNext }) => {
   const [email, setEmail] = useState("");
@@ -9,6 +10,7 @@ const LoginForm = ({ onNext }) => {
     e.preventDefault();
     if (!email.endsWith("@iitrpr.ac.in")) {
       setError("Please use a valid IIT Ropar email address.");
+      toast.error("Please use a valid IIT Ropar email address.");
       return;
     }
 
@@ -24,12 +26,14 @@ const LoginForm = ({ onNext }) => {
       if (response.ok) {
         setError("");
         onNext(email);
-        alert(data.message);
+        toast.success(data.message);
       } else {
         setError(data.message);
+        toast.error(data.message);
       }
     } catch (error) {
       setError("Failed to send OTP. Please try again later.");
+      toast.error("Failed to send OTP. Please try again later.");
     }
   };
 
@@ -38,11 +42,11 @@ const LoginForm = ({ onNext }) => {
       onSubmit={handleSubmit}
       className="bg-gray-800 p-6 rounded-2xl w-full max-w-md mx-auto text-center"
     >
-      <h1 className="text-2xl font-bold mb-4">LOGIN</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4">LOGIN</h1>
       <div className="mb-4 text-left">
         <label
           htmlFor="email"
-          className="block mb-2 text-sm font-medium text-gray-300"
+          className="block mb-2 text-sm sm:text-base font-medium text-gray-300"
         >
           Email
         </label>

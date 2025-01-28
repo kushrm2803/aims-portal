@@ -9,6 +9,7 @@ import Dropdown from "../dropdown/Dropdown";
 import { useAuth } from "../../context/AuthContext";
 
 const Navbar = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const currentPath = usePathname() || "/";
   const { user, loading } = useAuth();
@@ -24,9 +25,8 @@ const Navbar = () => {
   const fetchUserData = async (role, email) => {
     try {
       const response = await fetch(`/api/profile/${role}/${email}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch profile data");
-      }
+      if (!response.ok) throw new Error("Failed to fetch profile data");
+
       const data = await response.json();
       setUserData({
         name: data.name || "Unknown",
@@ -36,21 +36,42 @@ const Navbar = () => {
       setError(err.message);
     }
   };
-  // if (loading) return <p>Loading...</p>;
-console.log("User from context:", user);
-
 
   const tabs = [
     { label: "Home", path: "/home" },
     { label: "Student Record", path: "/student-record", roles: ["student"] },
-    { label: "Current Semester", path: "/current-semester", roles: ["student"] },
+    {
+      label: "Current Semester",
+      path: "/current-semester",
+      roles: ["student"],
+    },
     { label: "Courses", path: "/courses", roles: ["student"] },
     { label: "My Courses", path: "/faculty/my-courses", roles: ["professor"] },
-    { label: "Create Course", path: "/faculty/create-course", roles: ["professor"] },
-    { label: "Student Applications", path: "/admin/student-applications", roles: ["admin"] },
-    { label: "User Management", path: "/admin/user-management", roles: ["admin"] },
-    { label: "Course Management", path: "/admin/course-management", roles: ["admin"] },
-    { label: "Result Management", path: "/admin/result-management", roles: ["admin"] },
+    {
+      label: "Create Course",
+      path: "/faculty/create-course",
+      roles: ["professor"],
+    },
+    {
+      label: "Student Applications",
+      path: "/admin/student-applications",
+      roles: ["admin"],
+    },
+    {
+      label: "User Management",
+      path: "/admin/user-management",
+      roles: ["admin"],
+    },
+    {
+      label: "Course Management",
+      path: "/admin/course-management",
+      roles: ["admin"],
+    },
+    {
+      label: "Result Management",
+      path: "/admin/result-management",
+      roles: ["admin"],
+    },
     { label: "About", path: "/about" },
     { label: "Help", path: "/help" },
   ];
@@ -64,7 +85,7 @@ console.log("User from context:", user);
 
   const profileMenuItems = [
     { label: "Profile", href: "/profile" },
-    { label: "Logout"},
+    { label: "Logout" },
   ];
 
   useEffect(() => {
@@ -72,78 +93,154 @@ console.log("User from context:", user);
       setMounted(true);
     }
   }, [loading]);
-  
 
-  const isActiveTab = (path) => {
-    if (path === "/") {
-      return currentPath === "/" || currentPath === "";
-    }
-    return currentPath === path;
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen((prev) => !prev);
   };
 
+  const isActiveTab = (path) => currentPath === path;
+
   if (!mounted || loading) {
-    // Render a loading placeholder while user data is being fetched
     return (
-      <nav className="bg-gray-800 text-white w-9/10 mx-3 my-4 px-6 rounded-2xl flex justify-center items-center shadow-lg h-16">
+      <nav className="bg-gray-800 text-white flex justify-center items-center h-16">
         <p>Loading...</p>
       </nav>
     );
   }
 
   return (
-    <nav className="bg-gray-800 text-white w-9/10 mx-3 my-4 px-6 rounded-2xl flex justify-between items-center shadow-lg">
-      <div className="text-xl font-bold hover:scale-105 transition duration-300 ease-in-out transform">
-        <Link href="/">AIMS-IIT Ropar</Link>
-      </div>
+    <nav className="bg-gray-800 text-white px-4 sm:px-6 py-3 shadow-lg">
+      <div className="flex justify-between items-center">
+        <Link
+          href="/home"
+          className="text-xl font-bold hover:scale-105 transition duration-300"
+        >
+          AIMS-IIT Ropar
+        </Link>
 
-      <div className="space-x-6 flex items-center">
-        {tabs
-          .filter((tab) => !tab.roles || tab.roles.includes(user?.role)) // Only show tabs allowed for the user's role
-          .map((tab, index) => (
-          <Link
-            key={index}
-            href={tab.path}
-            className={`${
-              isActiveTab(tab.path)
-                ? "scale-110 bg-gray-700 text-white rounded-xl shadow-md font-bold px-4 py-2"
-                : "scale-100 hover:text-gray-400 transition duration-300 ease-in-out transform cursor-pointer"
-            }`}
+        <div className="sm:hidden">
+          <button
+            onClick={toggleMobileMenu}
+            className="p-2 rounded-md text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
           >
-            {tab.label}
-          </Link>
-        ))}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d={
+                  isMobileMenuOpen
+                    ? "M6 18L18 6M6 6l12 12"
+                    : "M4 6h16M4 12h16M4 18h16"
+                }
+              />
+            </svg>
+          </button>
+        </div>
+
+        <div className="hidden sm:flex space-x-4">
+          {tabs
+            .filter((tab) => !tab.roles || tab.roles.includes(user?.role))
+            .map((tab, index) => (
+              <Link
+                key={index}
+                href={tab.path}
+                className={`${
+                  isActiveTab(tab.path)
+                    ? "bg-gray-700 px-3 py-2 rounded-md font-bold"
+                    : "hover:bg-gray-700 px-3 py-2 rounded-md"
+                }`}
+              >
+                {tab.label}
+              </Link>
+            ))}
+        </div>
+
+        <div className="hidden sm:flex space-x-4 items-center">
+          <Dropdown
+            icon={
+              <Image
+                src={notificationLogo}
+                alt="Notification"
+                width={24}
+                height={24}
+              />
+            }
+            menuItems={notificationMenuItems}
+            menuClassName="absolute right-0 mt-2 z-10 bg-white shadow-lg rounded-lg w-64"
+          />
+          <Dropdown
+            icon={
+              userData ? (
+                <Image
+                  src={userData.photo}
+                  alt="Profile"
+                  width={36}
+                  height={36}
+                  className="rounded-full border"
+                />
+              ) : (
+                <div className="w-9 h-9 bg-gray-500 rounded-full" />
+              )
+            }
+            menuItems={profileMenuItems}
+            menuClassName="absolute right-0 mt-2 z-10 bg-white shadow-lg rounded-lg w-64"
+          />
+        </div>
       </div>
 
-      <div className="flex items-center space-x-6">
-        <Dropdown
-          icon={
-            <Image
-              src={notificationLogo}
-              alt="Notification-icon"
-              width={24}
-              height={24}
+      {isMobileMenuOpen && (
+        <div className="sm:hidden mt-4 space-y-2">
+          {tabs
+            .filter((tab) => !tab.roles || tab.roles.includes(user?.role))
+            .map((tab, index) => (
+              <Link
+                key={index}
+                href={tab.path}
+                className="block bg-gray-700 text-center px-3 py-2 rounded-md"
+              >
+                {tab.label}
+              </Link>
+            ))}
+          <div className="relative flex justify-end items-center mt-2 space-x-4">
+            <Dropdown
+              icon={
+                <Image
+                  src={notificationLogo}
+                  alt="Notification"
+                  width={24}
+                  height={24}
+                />
+              }
+              menuItems={notificationMenuItems}
+              menuClassName="absolute right-0 mt-2 z-10 bg-white shadow-lg rounded-lg w-64"
             />
-          }
-          menuItems={notificationMenuItems}
-        />
-        <Dropdown
-         
-         icon={
-          userData ? (
-            <Image
-              src={userData.photo}
-              alt="profile-icon"
-              width={40}
-              height={40}
-              className="rounded-full border border-gray-400"
+            <Dropdown
+              icon={
+                userData ? (
+                  <Image
+                    src={userData.photo}
+                    alt="Profile"
+                    width={36}
+                    height={36}
+                    className="rounded-full border"
+                  />
+                ) : (
+                  <div className="w-9 h-9 bg-gray-500 rounded-full" />
+                )
+              }
+              menuItems={profileMenuItems}
+              menuClassName="absolute right-0 mt-2 z-10 bg-white shadow-lg rounded-lg w-64"
             />
-          ) : (
-            <div className="w-10 h-10 bg-gray-500 rounded-full" />
-          )
-        }
-          menuItems={profileMenuItems}
-        />
-      </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

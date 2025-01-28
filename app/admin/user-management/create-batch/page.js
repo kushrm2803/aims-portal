@@ -32,15 +32,17 @@ export default function CreateBatch() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-      <div className="bg-white shadow-xl rounded-xl p-8 max-w-lg w-full">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">Create Batch</h1>
-        
+    <div className="min-h-screen flex items-center justify-center p-6 bg-gray-900">
+      <div className="bg-gray-800 shadow-xl rounded-2xl p-8 max-w-lg w-full">
+        <h1 className="text-3xl font-bold text-white mb-6 text-center">
+          Create Batch
+        </h1>
+
         <form className="space-y-4" onSubmit={handleSubmit}>
           <input
             type="text"
             placeholder="Batch (e.g. 2023)"
-            className="w-full p-3 border border-gray-300 rounded-lg"
+            className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-400"
             value={batch}
             onChange={(e) => setBatch(e.target.value)}
             required
@@ -48,7 +50,7 @@ export default function CreateBatch() {
           <input
             type="text"
             placeholder="Department"
-            className="w-full p-3 border border-gray-300 rounded-lg"
+            className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-green-400"
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
             required
@@ -56,21 +58,29 @@ export default function CreateBatch() {
           <input
             type="email"
             placeholder="Faculty Advisor Email"
-            className="w-full p-3 border border-gray-300 rounded-lg"
+            className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-indigo-400"
             value={facultyEmail}
             onChange={(e) => setFacultyEmail(e.target.value)}
             required
           />
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg"
             disabled={loading}
           >
             {loading ? "Creating..." : "Create Batch"}
           </button>
         </form>
 
-        {message && <p className="text-center mt-4 font-semibold text-green-600">{message}</p>}
+        {message && (
+          <p
+            className={`text-center mt-4 font-semibold ${
+              message.includes("Error") ? "text-red-500" : "text-green-500"
+            }`}
+          >
+            {message}
+          </p>
+        )}
       </div>
     </div>
   );

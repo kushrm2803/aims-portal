@@ -1,5 +1,6 @@
-// OTPForm Component
+"use client";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 const OTPForm = ({ onVerify, email }) => {
   const [otp, setOtp] = useState("");
@@ -11,6 +12,7 @@ const OTPForm = ({ onVerify, email }) => {
 
     if (!otp || otp.length !== 6 || isNaN(otp)) {
       setError("Please enter a valid 6-digit OTP.");
+      toast.error("Please enter a valid 6-digit OTP.");
       return;
     }
 
@@ -23,15 +25,16 @@ const OTPForm = ({ onVerify, email }) => {
       });
 
       const data = await response.json();
-       console.log("data{response} recieved on the OTP form ",data);
       if (response.ok) {
-        alert(data.message);
+        toast.success(data.message);
         onVerify();
       } else {
         setError(data.errormessage || "Invalid OTP. Please try again.");
+        toast.error(data.errormessage || "Invalid OTP. Please try again.");
       }
     } catch (error) {
       setError("Failed to verify OTP. Please try again.");
+      toast.error("Failed to verify OTP. Please try again.");
     }
   };
 
@@ -40,11 +43,11 @@ const OTPForm = ({ onVerify, email }) => {
       onSubmit={handleSubmit}
       className="bg-gray-800 p-6 rounded-2xl shadow-md w-full max-w-md mx-auto text-center"
     >
-      <h1 className="text-2xl font-bold mb-4">Verify OTP</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4">Verify OTP</h1>
       <div className="mb-4 text-left">
         <label
           htmlFor="otp"
-          className="block mb-2 text-sm font-medium text-gray-300"
+          className="block mb-2 text-sm sm:text-base font-medium text-gray-300"
         >
           OTP
         </label>

@@ -46,7 +46,7 @@ const StudentRecordPage = () => {
     let totalCredits = 0;
     const cumulativeCGPAs = [];
 
-    records.forEach(({ courses }, semesterIndex) => {
+    records.forEach(({ courses }) => {
       courses.forEach(({ grade, credits }) => {
         const gradePoint =
           {
@@ -75,9 +75,9 @@ const StudentRecordPage = () => {
   const cumulativeCGPAs = calculateCGPA(records);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col w-9/10 mx-3 my-4 py-3 px-6 rounded-2xl items-center">
-      <h1 className="w-9/12 bg-gray-800 rounded-2xl py-2 px-4 shadow-lg my-6 text-center text-3xl">
-        <strong>Student Record</strong>
+    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center px-4 py-6">
+      <h1 className="w-full max-w-4xl bg-gray-800 rounded-2xl py-4 px-6 shadow-lg mb-8 text-center text-3xl font-bold text-white">
+        Student Record
       </h1>
 
       {records.map((record, index) => (
@@ -88,8 +88,10 @@ const StudentRecordPage = () => {
         />
       ))}
 
-      <div className="w-9/12 max-w-7xl bg-gray-800 rounded-2xl py-6 px-4 shadow-lg my-6 text-center">
-        <h2 className="text-3xl font-bold mb-4">Cumulative Performance</h2>
+      <div className="w-full max-w-4xl bg-gray-800 rounded-2xl py-6 px-6 shadow-lg mt-8 text-center">
+        <h2 className="text-3xl font-bold mb-4 text-white">
+          Cumulative Performance
+        </h2>
         <p className="text-lg text-gray-300">
           <strong>Overall CGPA:</strong>{" "}
           {cumulativeCGPAs[cumulativeCGPAs.length - 1] || "N/A"}

@@ -1,5 +1,8 @@
 "use client";
 import { useState } from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ViewBatches() {
   const [batch, setBatch] = useState("");
@@ -16,49 +19,55 @@ export default function ViewBatches() {
       ...(facultyEmail && { facultyEmail }),
     }).toString();
 
-    const response = await fetch(`/api/admin/get-batch?${query}`);
-    const data = await response.json();
-    
-    if (response.ok) {
-      setBatches(data.batches);
-    } else {
-      setBatches([]);
+    try {
+      const response = await axios.get(`/api/admin/get-batch?${query}`);
+      if (response.status === 200) {
+        setBatches(response.data.batches || []);
+      } else {
+        setBatches([]);
+      }
+    } catch (error) {
+      toast.error("Error fetching batches.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-      <div className="bg-white shadow-xl rounded-xl p-8 max-w-2xl w-full">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">View Batches</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-6">
+      <ToastContainer position="top-right" autoClose={3000} />
+      <div className="bg-gray-800 shadow-xl rounded-2xl p-6 md:p-10 w-full max-w-lg">
+        <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-6">
+          View Batches
+        </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="flex flex-col md:flex-row gap-4 mb-6">
           <input
             type="text"
             placeholder="Batch (e.g. 2023)"
-            className="p-3 border border-gray-300 rounded-lg"
+            className="input-field"
             value={batch}
             onChange={(e) => setBatch(e.target.value)}
           />
           <input
             type="text"
             placeholder="Department"
-            className="p-3 border border-gray-300 rounded-lg"
+            className="input-field"
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
           />
           <input
             type="email"
             placeholder="Faculty Email"
-            className="p-3 border border-gray-300 rounded-lg"
+            className="input-field"
             value={facultyEmail}
             onChange={(e) => setFacultyEmail(e.target.value)}
           />
         </div>
 
         <button
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg mt-4"
           onClick={handleSearch}
+          className={`submit-btn ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
           disabled={loading}
         >
           {loading ? "Searching..." : "Search Batches"}
@@ -66,22 +75,88 @@ export default function ViewBatches() {
 
         <div className="mt-6">
           {batches.length > 0 ? (
-            <ul className="space-y-4">
+            <ul className="batch-list">
               {batches.map((b) => (
-                <li key={b._id} className="p-4 bg-gray-50 border-l-4 border-blue-500 shadow-sm rounded-lg">
-                  <p className="text-lg font-bold">Batch: {b.batch}</p>
-                  <p className="text-gray-700">Department: {b.department}</p>
-                  <p className="text-gray-700">
+                <li key={b._id} className="batch-card">
+                  <p className="batch-title">Batch: {b.batch}</p>
+                  <p className="batch-detail">Department: {b.department}</p>
+                  <p className="batch-detail">
                     Faculty Advisor: {b.facultyAdvisor.name} ({b.facultyAdvisor.email})
                   </p>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-center text-gray-600 mt-4">No batches found.</p>
+            <p className="text-center text-white">No batches found.</p>
           )}
         </div>
       </div>
+      
+      <style jsx>{`
+        .input-field {
+          padding: 12px;
+          font-size: 16px;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          background-color: #fff;
+          transition: border-color 0.3s ease;
+        }
+
+        .input-field:focus {
+          border-color: #4f46e5;
+          outline: none;
+        }
+
+        .submit-btn {
+          padding: 12px;
+          font-size: 16px;
+          font-weight: bold;
+          background-color: #4f46e5;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+          background-color: #4338ca;
+        }
+
+        .batch-list {
+          list-style: none;
+          padding: 0;
+        }
+
+        .batch-card {
+          padding: 12px;
+          background-color: #fff;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          margin-bottom: 15px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .batch-title {
+          font-weight: bold;
+          font-size: 18px;
+        }
+
+        .batch-detail {
+          font-size: 16px;
+          color: #555;
+        }
+
+        @media (min-width: 768px) {
+          .input-field {
+            flex: 1;
+          }
+
+          .submit-btn {
+            width: auto;
+          }
+        }
+      `}</style>
     </div>
   );
 }

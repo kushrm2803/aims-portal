@@ -1,42 +1,28 @@
-"use client";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import LogoutMessage from "@/components/auth/LogoutMessage";
+export default async function RootPage() {
+  const cookieStore = cookies();
+  const token = cookieStore.get("authToken")?.value;
 
-const Home = () => {
-  const [logoutMessage, setLogoutMessage] = useState("");
-  const router = useRouter();
-  const searchParams = useSearchParams();  
-
-  useEffect(() => {
-    if (searchParams.get("logout") === "success") {
-      setLogoutMessage("You have been logged out successfully.");
-      router.replace("/", { shallow: true }); 
+  try {
+    if (!token) {
+      return redirectToLogin();
     }
-  }, [searchParams, router]);
 
-  return (
-    <div 
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "30vh",
-        textAlign: "center",
-        padding: "20px",
-      }}
-    >
-      <div>
-        {logoutMessage && (
-          <LogoutMessage message={logoutMessage} />
-        )}
-        <div style={{ fontSize: "24px", fontWeight: "bold", marginTop: "20px" }}>
-          Main page
-        </div>
-      </div>
-    </div>
-  );
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    return redirectToHome();
+  } catch (error) {
+    console.error("JWT verification failed:", error.message);
+    return redirectToLogin();
+  }
 }
 
-export default Home;
+function redirectToLogin() {
+  return <script>{`window.location.href = "/login";`}</script>;
+}
+
+function redirectToHome() {
+  return <script>{`window.location.href = "/home";`}</script>;
+}
