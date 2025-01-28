@@ -2,7 +2,7 @@
 import {connectDB} from "@/utils/db"
 import Otp from '@/models/Otp';
 import jwt from 'jsonwebtoken';
-import cookie from 'cookie';
+import { serialize } from 'cookie'; // named import of serialize required for vercel deployment local is fine with both >>
 import Admin from "@/models/Admin";
 import Student from "@/models/Student";
 import { Professor } from "@/models/Professor";
@@ -97,12 +97,14 @@ export async function POST(req) {
 
     // Set the JWT token as an HTTP-only cookie
     return new Response(
-      JSON.stringify({ message: 'OTP verified successfully', redirectTo: '/home' }),
+      JSON.stringify({ message: 'OTP verified successfully',
+         redirectTo: '/home' ,
+         user: { email: newToken.email, role: newToken.role , id: newToken.id }}),
       {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'Set-Cookie': cookie.serialize('authToken', token, {
+          'Set-Cookie': serialize('authToken', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production' ? true : false, // For local testing
             maxAge: 3600,
