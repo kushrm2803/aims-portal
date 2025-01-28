@@ -22,9 +22,8 @@ export async function GET(request) {
 
     // Fetch courses where the student is enrolled
     const studentCourses = await Course.find({
-      "students.student": studentId, // Matching student ID in course's student array
-      "students.enrollmentStatus": "approved", // Fetch only approved enrollments
-    }).select("courseName courseCode courseCredit semesterOffered status");
+      "students.student": studentId,
+    }).select("courseName courseCode courseCredit semesterOffered status students");
 
     console.log("Fetched courses for student:", studentCourses);
 

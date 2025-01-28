@@ -32,10 +32,6 @@ const CurrentSemesterPage = () => {
     fetchCourses(user.id); // Pass the studentId from the context
   }, [user]);
 
-  const handleDrop = async (courseId) => {
-    alert(`Course with ID ${courseId} dropped.`);
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
@@ -59,7 +55,7 @@ const CurrentSemesterPage = () => {
       </h1>
 
       {courses.length > 0 ? (
-        <CourseTable courses={courses} onDrop={handleDrop} />
+        <CourseTable courses={courses} currentStudentId={user.id} />
       ) : (
         <p className="text-gray-400 text-center text-lg">
           No courses enrolled yet.

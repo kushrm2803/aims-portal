@@ -4,21 +4,23 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CourseCard from "@/components/courses/CourseCard";
 import { useRouter } from "next/navigation";
-import { toast, ToastContainer } from "react-toastify"; // Import Toastify and ToastContainer
-import "react-toastify/dist/ReactToastify.css"; // Import Toastify styles
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CoursesPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [allCourses, setAllCourses] = useState([]); // Store all courses for filtering
   const [filteredCourses, setFilteredCourses] = useState([]);
+  const [creditedCourses, setCreditedCourses] = useState([]); // Store credited course IDs
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const router = useRouter();
+
   useEffect(() => {
     fetchCourses();
+    fetchCreditedCourses(); // Fetch the credited courses on page load
   }, []);
-
-  const router = useRouter();
 
   const fetchCourses = async () => {
     setLoading(true);
@@ -34,6 +36,17 @@ const CoursesPage = () => {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchCreditedCourses = async () => {
+    try {
+      const response = await axios.get("/api/student/get-credited-courses");
+      const creditedCourseIds = response.data.map((course) => course._id);
+      setCreditedCourses(creditedCourseIds);
+    } catch (err) {
+      console.error("Failed to fetch credited courses:", err);
+      toast.error("Failed to fetch credited courses.");
     }
   };
 
@@ -61,6 +74,7 @@ const CoursesPage = () => {
         toast.success(
           `Credit request sent successfully for course ID: ${courseId}. Awaiting admin approval.`
         );
+        fetchCreditedCourses();
       } else {
         toast.error(`Failed to send request: ${response.data.error}`);
       }
@@ -102,6 +116,7 @@ const CoursesPage = () => {
             <CourseCard
               key={course._id}
               course={course}
+              hasCredited={creditedCourses.includes(course._id)}
               onCredit={() => handleCredit(course._id)}
               onViewDetails={() => handleViewDetails(course._id)}
             />

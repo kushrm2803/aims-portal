@@ -2,8 +2,8 @@ import React from "react";
 
 const CourseCard = ({
   course,
+  hasCredited,
   onCredit,
-
   onViewDetails,
 }) => {
   return (
@@ -15,10 +15,15 @@ const CourseCard = ({
       <p className="text-gray-400 mb-4">Credits: {course.courseCredit}</p>
       <div className="flex flex-wrap justify-center gap-4">
         <button
-          className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-xl hover:bg-blue-600 transition"
-          onClick={() => onCredit(course._id)}
+          className={`${
+            hasCredited
+              ? "bg-gray-500 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          } text-white font-semibold py-2 px-4 rounded-xl transition`}
+          onClick={() => !hasCredited && onCredit(course._id)}
+          disabled={hasCredited} // Disable the button if the course is already credited
         >
-          Credit
+          {hasCredited ? "Credited" : "Credit"}
         </button>
 
         <button

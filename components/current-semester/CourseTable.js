@@ -1,6 +1,4 @@
-import React from "react";
-
-const CourseTable = ({ courses, onDrop }) => {
+const CourseTable = ({ courses, currentStudentId }) => {
   return (
     <section className="w-full max-w-7xl bg-gray-800 rounded-2xl py-6 px-4 shadow-lg my-6">
       <h2 className="text-2xl font-bold mb-4 text-center">
@@ -12,27 +10,45 @@ const CourseTable = ({ courses, onDrop }) => {
             <tr className="border-b border-gray-700">
               <th className="py-2 px-4 text-left">Course Name</th>
               <th className="py-2 px-4 text-center">Credits</th>
-              <th className="py-2 px-4 text-center">Actions</th>
+              <th className="py-2 px-4 text-center">Enrollment Status</th>
             </tr>
           </thead>
           <tbody>
-            {courses.map((course, index) => (
-              <tr
-                key={course._id || index}
-                className="border-b border-gray-700"
-              >
-                <td className="py-2 px-4 text-left">{course.courseName}</td>
-                <td className="py-2 px-4 text-center">{course.courseCredit}</td>
-                <td className="py-2 px-4 text-center space-x-4">
-                  <button
-                    className="bg-gray-700 text-white font-semibold py-1 px-3 rounded-xl hover:bg-gray-600 transition"
-                    onClick={() => onDrop(course._id)}
-                  >
-                    Drop
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {courses.map((course, index) => {
+              // Check if course.students is defined and is an array
+              const students = Array.isArray(course.students)
+                ? course.students
+                : [];
+
+              const enrollment = students.find(
+                (s) => String(s.student) === String(currentStudentId)
+              );
+
+              return (
+                <tr
+                  key={course._id || index}
+                  className="border-b border-gray-700"
+                >
+                  <td className="py-2 px-4 text-left">{course.courseName}</td>
+                  <td className="py-2 px-4 text-center">
+                    {course.courseCredit}
+                  </td>
+                  <td className="py-2 px-4 text-center">
+                    <span
+                      className={`py-1 px-3 rounded-xl font-semibold ${
+                        enrollment?.enrollmentStatus === "approved"
+                          ? "bg-green-500 text-white"
+                          : enrollment?.enrollmentStatus === "pending"
+                          ? "bg-yellow-500 text-white"
+                          : "bg-red-500 text-white"
+                      }`}
+                    >
+                      {enrollment?.enrollmentStatus || "NA"}
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
