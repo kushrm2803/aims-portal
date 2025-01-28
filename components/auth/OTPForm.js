@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 const OTPForm = ({ onVerify, email }) => {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,6 +16,8 @@ const OTPForm = ({ onVerify, email }) => {
       toast.error("Please enter a valid 6-digit OTP.");
       return;
     }
+
+    setLoading(true);
 
     try {
       const response = await fetch("/api/auth/verifyOtp", {
@@ -35,6 +38,8 @@ const OTPForm = ({ onVerify, email }) => {
     } catch (error) {
       setError("Failed to verify OTP. Please try again.");
       toast.error("Failed to verify OTP. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -63,11 +68,15 @@ const OTPForm = ({ onVerify, email }) => {
       {error && <div className="text-red-500 mb-4 text-sm">{error}</div>}
       <button
         type="submit"
-        className="bg-gray-600 hover:bg-gray-800 text-white py-2 px-4 rounded-md w-full transition"
+        className={`bg-gray-600 hover:bg-gray-800 text-white py-2 px-4 rounded-md w-full transition ${
+          loading ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+        disabled={loading}
       >
-        Verify OTP
+        {loading ? "Verifying..." : "Verify OTP"}
       </button>
-    </form>
+      
+          </form>
   );
 };
 

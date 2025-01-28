@@ -15,10 +15,12 @@ const Navbar = () => {
   const { user, loading } = useAuth();
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
+  const [isAdvisor, setIsAdvisor] = useState(false);
 
   useEffect(() => {
     if (!loading && user) {
       fetchUserData(user.role, user.email);
+      checkAdvisorStatus(user.id);
     }
   }, [user, loading]);
 
@@ -36,6 +38,18 @@ const Navbar = () => {
       setError(err.message);
     }
   };
+  
+  const checkAdvisorStatus = async (facultyId) => {
+    try {
+      const response = await fetch(`/api/is-faculty-advisor/${facultyId}`);
+      if (response.ok) {
+        const { isAdvisor } = await response.json();
+        setIsAdvisor(isAdvisor);
+      }
+    } catch (error) {
+      console.error("Failed to check advisor status:", error);
+    }
+  };
 
   const tabs = [
     { label: "Home", path: "/home" },
@@ -47,6 +61,7 @@ const Navbar = () => {
     },
     { label: "Courses", path: "/courses", roles: ["student"] },
     { label: "My Courses", path: "/faculty/my-courses", roles: ["professor"] },
+    { label: "Student Applications", path: "/requests", roles: ["professor"], showIfAdvisor: true },
     {
       label: "Create Course",
       path: "/faculty/create-course",
@@ -146,7 +161,11 @@ const Navbar = () => {
 
         <div className="hidden sm:flex space-x-4">
           {tabs
-            .filter((tab) => !tab.roles || tab.roles.includes(user?.role))
+            .filter(
+              (tab) =>
+                (!tab.roles || tab.roles.includes(user?.role)) &&
+              (!tab.showIfAdvisor || isAdvisor)
+          )
             .map((tab, index) => (
               <Link
                 key={index}

@@ -15,7 +15,8 @@ const CourseSchema = new mongoose.Schema({
       enrollmentStatus: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
       grade: { type: String, default: "N/A" } , // Default until grades are assigned
       appliedOn: { type: Date, default: Date.now },
-      approvedOn: { type: Date }
+      approvedOn: { type: Date },
+      facultyAdvisorApproval: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" }
     }
   ],
   status: {

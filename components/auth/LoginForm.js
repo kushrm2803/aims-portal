@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 const LoginForm = ({ onNext }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,6 +14,7 @@ const LoginForm = ({ onNext }) => {
       toast.error("Please use a valid IIT Ropar email address.");
       return;
     }
+    setLoading(true);
 
     try {
       const response = await fetch("/api/auth/sendOtp", {
@@ -34,6 +36,8 @@ const LoginForm = ({ onNext }) => {
     } catch (error) {
       setError("Failed to send OTP. Please try again later.");
       toast.error("Failed to send OTP. Please try again later.");
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -57,14 +61,18 @@ const LoginForm = ({ onNext }) => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="w-full p-2 rounded-md bg-gray-900 text-white border border-gray-600 focus:outline-none focus:border-blue-500"
+          disabled={loading}
         />
       </div>
       {error && <div className="text-red-500 mb-4 text-sm">{error}</div>}
       <button
         type="submit"
-        className="bg-gray-700 hover:bg-gray-900 text-white py-2 px-4 rounded-md w-full transition"
+        className={`bg-gray-700 hover:bg-gray-900 text-white py-2 px-4 rounded-md w-full transition${
+          loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              disabled ={loading}
       >
-        Send OTP
+        {loading ? "Sending OTP ..." : "Send OTP"}
       </button>
     </form>
   );

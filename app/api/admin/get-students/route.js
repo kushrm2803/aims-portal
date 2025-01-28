@@ -1,6 +1,6 @@
 import { connectDB } from "@/utils/db";
 import Student from "@/models/Student";
-import Batch from "@/models/Batch";  // Assuming batch has its own model
+import Batch from "@/models/Batch"; 
 
 export async function GET(req) {
   try {

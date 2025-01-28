@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import { AuthProvider } from "../context/AuthContext";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +28,9 @@ export default function RootLayout({ children }) {
           className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-b from-slate-900 via-slate-700 to-slate-500 min-h-screen flex flex-col`}
         >
           <Header />
-          <main className="flex-grow">{children}</main>
+          <main className="flex-grow">
+          <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+           </main>
           <Footer />
         </body>
       </html>
