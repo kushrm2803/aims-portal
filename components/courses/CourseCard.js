@@ -1,8 +1,13 @@
 import React from "react";
 
-const CourseCard = ({ course, onCredit, onViewDetails }) => {
+const CourseCard = ({
+  course,
+  onCredit,
+
+  onViewDetails,
+}) => {
   return (
-    <div className="bg-gray-800 rounded-2xl p-6 shadow-lg text-center transform transition duration-500 hover:scale-105 w-full sm:w-[48%] md:w-[30%] lg:w-[22%]">
+    <div className="bg-gray-800 rounded-2xl p-6 shadow-lg text-center transform transition duration-500 hover:scale-105">
       <h3 className="text-2xl font-bold mb-3 text-white">
         {course.courseName}
       </h3>
