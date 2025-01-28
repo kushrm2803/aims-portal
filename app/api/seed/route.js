@@ -3,7 +3,7 @@ import { connectDB } from "@/utils/db";  // Your DB connection function
 import Student from "@/models/Student";  
 import { Professor } from "@/models/Professor";
 import Admin from "@/models/Admin";
-import Batch from "@/models/batch";  // Ensure correct casing
+import Batch from "@/models/Batch"; 
 
 const rollnos  = ["2022csb1079", "2022csb1081", "2022csb1089", "2022csb1107"];
 var studentRollNo = 1080

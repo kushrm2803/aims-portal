@@ -1,4 +1,5 @@
-import { connectToDatabase } from '@/lib/dbConnect';
+// import { connectToDatabase } from '@/lib/dbConnect';
+import { connectDB } from '@/utils/db';
 import Otp from '@/models/Otp';
 import { sendOtpEmail } from '@/lib/mailer';
 
@@ -16,7 +17,8 @@ export async function POST(req) {
     // Generate a 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    await connectToDatabase();
+    // await connectToDatabase();
+    await connectDB();
 
     // Store OTP in DB (overwrite if email exists)
     await Otp.findOneAndUpdate(

@@ -10,7 +10,7 @@ const AdminSchema = new mongoose.Schema({
         required : true,
         unique : true
     },
-    Profile : {
+    profile : {
         type : String
     }
 });
